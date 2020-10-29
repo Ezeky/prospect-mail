@@ -30,7 +30,6 @@ class TrayController {
     }
 
     createTrayIcon(value) {
-
         let iconPath
         if (macOS) {
             iconPath = value ? '../../assets/outlook_macOS_unread.png' : '../../assets/outlook_macOS.png'

@@ -1,6 +1,7 @@
 const { app } = require('electron')
 const MailWindowController = require('./controller/mail-window-controller')
 const TrayController = require('./controller/tray-controller')
+const notificationController = require('./controller/notification-controller')
 
 class ProspectMail {
   constructor() {
@@ -54,6 +55,8 @@ class ProspectMail {
   createControllers() {
     this.mailController = new MailWindowController()
     this.trayController = new TrayController(this.mailController)
+
+    notificationController(this.mailController)
   }
 }
 
