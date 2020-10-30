@@ -76,6 +76,7 @@ class MailWindowController {
         // display native notification
         const alreadySendNotifications = [];
         ipcMain.on("newNotification", ( event, info ) => {
+            console.log('notification request', alreadySendNotifications.indexOf(info.hash) > -1)
             if(alreadySendNotifications.indexOf(info.hash) > -1 && !info.critical)
                 return;
 

@@ -17,31 +17,46 @@ const init = function () {
             const reminder = newNotification.filter(el => el.matches('[data-storybook="reminder"]'));
             if (reminder.length)
                 reminder.forEach(el => {
-                    const title = el.querySelector('button>span>div:nth-of-type(2)>div>div').innerText
-                    const inTime = el.querySelector('button>span>div:nth-of-type(2)>div>div:nth-of-type(2)').innerText
-                    const time = el.querySelector('button>span>div:nth-of-type(2)>div:nth-of-type(2)>div').innerText
-                    const where = el.querySelector('button>span>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)').innerText
+                    debugger;
+                    let title;
+                    try{
+                        title = el.querySelector('button>span>div>div>div').innerText
+                    } catch(e){console.log('can\' get title')}
+                    let inTime;
+                    try{
+                        inTime = el.querySelector('button>span>div>div>div:nth-of-type(2)').innerText
+                    } catch(e){console.log('can\' get inTime')}
+                    let time;
+                    try{
+                        time = el.querySelector('button>span>div>div:nth-of-type(2)>div').innerText
+                    } catch(e){console.log('can\' get time')}
+                    let where;
+                    try{
+                        where = el.querySelector('button>span>div>div:nth-of-type(2)>div:nth-of-type(2)').innerText
+                    } catch(e){console.log('can\' get where')}
                     let body = ''
-                    body += `${time} ${title}\n`
+                    body += `${time || ''} ${title || ''}\n`
                     if(where)
-                        body += `@${where}`
+                        body += `@${where || ''}`
 
+                    const hash = `${title}${time}${where}`.hashCode()
+                    console.log('send notification')
                     nativeNotification({
-                        hash: `${title}${time}${where}`.hashCode(),
-                        title: `Meeting ${/\d/.test(inTime) ? `in ${inTime}` : inTime}`,
+                        hash,
+                        title: `Meeting ${/\d/.test(inTime) ? `in ${inTime || ''}` : inTime || ''}`,
                         critical: /ago$/.test(inTime),
-                        body: body
+                        body
                     })
 
-                    if(/^\d*|now/.test(inTime)){
+                    if(/^\d* min$|now/.test(inTime)){
                         console.log('sending critical meeting', (parseInt(inTime) - 1) * 1000)
                         setTimeout(() => {
                             console.log('times up')
                             nativeNotification({
-                                hash: `${title}${time}${where}`.hashCode(),
+                                hash,
                                 title: `Meeting now!`,
                                 critical: true,
-                                body: body
+                                body
                             })
                         }, (parseInt(inTime) - 1) * 60 * 1000)
                     }
